@@ -2,71 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles for React Flow */
 .react-flow__node {
   @apply select-none;
 }
 
+.react-flow__node.selected {
+  @apply ring-2 ring-blue-500;
+}
+
 .react-flow__handle {
-  width: 0.75rem !important;
-  height: 0.75rem !important;
-  background-color: #3b82f6 !important;
+  @apply !w-3 !h-3;
+}
+
+.dark .react-flow__handle {
+  @apply !bg-blue-400;
 }
 
 .react-flow__handle:hover {
-  background-color: #2563eb !important;
+  @apply !bg-blue-600;
 }
 
 .react-flow__edge-path {
-  stroke: #9ca3af !important;
+  @apply !stroke-2;
 }
 
-.react-flow__edge:hover .react-flow__edge-path {
-  stroke: #3b82f6 !important;
+.dark .react-flow__edge-path {
+  @apply !stroke-gray-400;
+}
+
+.dark .react-flow__edge:hover .react-flow__edge-path {
+  @apply !stroke-blue-400;
 }
 
 .react-flow__controls {
-  background-color: white !important;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important;
-  border-radius: 0.5rem !important;
-  border: none !important;
+  @apply !shadow-lg !rounded-lg !border-none;
 }
 
 .react-flow__controls-button {
-  border-color: #e5e7eb !important;
-  background-color: white !important;
+  @apply hover:!bg-gray-50;
 }
 
-.react-flow__controls-button:hover {
-  background-color: #f9fafb !important;
+.dark .react-flow__controls-button {
+  @apply hover:!bg-gray-700;
 }
 
 .react-flow__minimap {
-  background-color: white !important;
-  border-radius: 0.5rem !important;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important;
+  @apply !rounded-lg !shadow-lg;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 0.5rem;
+  @apply w-2;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #f3f4f6;
-  border-radius: 0.25rem;
+  @apply bg-gray-100 rounded;
+}
+
+.dark ::-webkit-scrollbar-track {
+  @apply bg-gray-800;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #d1d5db;
-  border-radius: 0.25rem;
+  @apply bg-gray-300 rounded hover:bg-gray-400;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: #9ca3af;
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 hover:bg-gray-500;
 }
 
-/* Node appearance animation */
 @keyframes nodeAppear {
   from {
     opacity: 0;

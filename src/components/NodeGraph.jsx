@@ -5,19 +5,22 @@ import ReactFlow, {
   MiniMap,
   useNodesState,
   useEdgesState,
-  addEdge
-} from 'react-flow-renderer';
+  addEdge,
+} from 'reactflow';
+import 'reactflow/dist/style.css';
 import Node from './Node';
 
 const nodeTypes = {
   custom: Node,
 };
 
-const NodeGraph = ({ initialNodes = [], initialEdges = [] }) => {
+const NodeGraph = ({ initialNodes = [], initialEdges = [], onNodeClick }) => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = (params) => setEdges((eds) => addEdge(params, eds));
+  const onConnect = (params) => {
+    setEdges((eds) => addEdge({ ...params, animated: true }, eds));
+  };
 
   return (
     <div className="h-full w-full">
@@ -27,13 +30,31 @@ const NodeGraph = ({ initialNodes = [], initialEdges = [] }) => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onNodeClick={onNodeClick}
         nodeTypes={nodeTypes}
         fitView
-        className="bg-gray-50"
+        snapToGrid
+        snapGrid={[15, 15]}
+        defaultViewport={{ x: 0, y: 0, zoom: 1 }}
       >
-        <Background color="#aaa" gap={16} />
-        <Controls />
-        <MiniMap />
+        <Background 
+          gap={20} 
+          color="#999" 
+          variant="dots"
+        />
+        <Controls 
+          position="bottom-left"
+          showInteractive={false}
+        />
+        <MiniMap 
+          nodeColor={(node) => {
+            return node.selected ? '#6366f1' : '#64748b';
+          }}
+          maskColor="rgba(0, 0, 0, 0.2)"
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          }}
+        />
       </ReactFlow>
     </div>
   );
@@ -41,7 +62,8 @@ const NodeGraph = ({ initialNodes = [], initialEdges = [] }) => {
 
 NodeGraph.propTypes = {
   initialNodes: PropTypes.arrayOf(PropTypes.object),
-  initialEdges: PropTypes.arrayOf(PropTypes.object)
+  initialEdges: PropTypes.arrayOf(PropTypes.object),
+  onNodeClick: PropTypes.func
 };
 
 export default NodeGraph;

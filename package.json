@@ -1,5 +1,5 @@
 {
-  "homepage": "https://yourusername.github.io/neural-network-obsidian",
+  "homepage": "https://KaiOhno.github.io/neural-network-obsidian",
   "name": "neural-network-obsidian",
   "private": true,
   "version": "0.0.0",
@@ -14,13 +14,17 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
+    "html-to-image": "^1.11.11",
+    "jspdf": "^2.5.2",
     "lodash": "^4.17.21",
     "lucide-react": "^0.471.0",
     "natural": "^8.0.1",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-flow-renderer": "^10.3.17"
+    "react-flow-renderer": "^10.3.17",
+    "react-hot-toast": "^2.5.1",
+    "reactflow": "^11.11.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

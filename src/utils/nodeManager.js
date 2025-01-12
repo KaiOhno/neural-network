@@ -1,67 +1,52 @@
-import { processText, findSimilarities } from './textProcessor';
-
-export const createNode = (text, position = { x: 0, y: 0 }) => {
-  const processedData = processText(text);
+export const createNode = (text, position) => {
+    const keywords = text
+      .toLowerCase()
+      .split(' ')
+      .filter(word => word.length > 3)
+      .slice(0, 5);
   
-  return {
-    id: `node-${Date.now()}`,
-    type: 'custom',
-    position,
-    data: {
-      label: processedData.summary,
-      fullText: processedData.fullText,
-      keywords: processedData.keywords,
-      tokenCount: processedData.tokenCount
-    }
+    return {
+      id: `node-${Date.now()}`,
+      type: 'custom',
+      position: {
+        x: position?.x ?? Math.random() * 500,
+        y: position?.y ?? Math.random() * 300
+      },
+      data: {
+        label: text.length > 30 ? text.substring(0, 30) + '...' : text,
+        fullText: text,
+        keywords,
+        connections: 0
+      },
+      draggable: true, // Ensure nodes are draggable
+    };
   };
-};
-
-export const createEdges = (newNode, existingNodes, similarityThreshold = 0.1) => {
-  return existingNodes
-    .map(existingNode => {
-      const similarity = findSimilarities(
-        newNode.data,
-        existingNode.data
-      );
-
-      if (similarity >= similarityThreshold) {
+  
+  export const createEdges = (newNode, existingNodes) => {
+    return existingNodes.map(existingNode => {
+      const sourceKeywords = new Set(newNode.data.keywords);
+      const targetKeywords = new Set(existingNode.data.keywords);
+      const commonKeywords = [...sourceKeywords].filter(keyword => targetKeywords.has(keyword));
+      
+      if (commonKeywords.length > 0) {
         return {
           id: `edge-${newNode.id}-${existingNode.id}`,
           source: newNode.id,
           target: existingNode.id,
-          style: { strokeWidth: Math.max(1, similarity * 5) },
-          data: { similarity }
+          animated: true,
+          style: { stroke: '#2563eb', strokeWidth: Math.min(commonKeywords.length * 2, 5) }
         };
       }
       return null;
-    })
-    .filter(Boolean);
-};
-
-export const calculateNetworkStats = (nodes, edges) => {
-  const nodeCount = nodes.length;
-  const edgeCount = edges.length;
-  
-  // Calculate average connections per node
-  const avgConnections = edgeCount / nodeCount || 0;
-  
-  // Find most connected node
-  const nodeConnections = nodes.map(node => ({
-    id: node.id,
-    connections: edges.filter(edge => 
-      edge.source === node.id || edge.target === node.id
-    ).length
-  }));
-  
-  const mostConnected = nodeConnections.reduce((max, curr) => 
-    curr.connections > max.connections ? curr : max
-  , { connections: 0 });
-
-  return {
-    nodeCount,
-    edgeCount,
-    avgConnections,
-    mostConnectedNode: mostConnected.id,
-    density: (2 * edgeCount) / (nodeCount * (nodeCount - 1)) || 0
+    }).filter(Boolean);
   };
-};
+  
+  export const calculateNetworkStats = (nodes, edges) => {
+    return {
+      nodeCount: nodes.length,
+      edgeCount: edges.length,
+      density: nodes.length > 1 
+        ? (2 * edges.length) / (nodes.length * (nodes.length - 1))
+        : 0
+    };
+  };
